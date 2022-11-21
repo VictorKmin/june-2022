@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 require('dotenv').config()
 
 const userRouter = require('./router/user.router');
@@ -22,6 +23,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(configs.PORT, () => {
+app.listen(configs.PORT, async () => {
+  await mongoose.connect('mongodb://localhost:27017/june2022');
   console.log(`Server listen ${configs.PORT}`);
 });
