@@ -1,12 +1,14 @@
 const User = require("../dataBase/User");
 const ApiError = require("../error/ApiError");
+const userValidator = require("../validator/user.validator");
+const commonValidator = require("../validator/common.validators");
 
 module.exports = {
-  checkIsUserExist: async (req, res, next) => {
+  getUserDynamically: (fieldName, from = 'body', dbField = fieldName) => async (req, res, next) => {
     try {
-      const { userId } = req.params;
+      const fieldToSearch = req[from][fieldName];
 
-      const user = await User.findById(userId);
+      const user = await User.findOne({ [dbField]: fieldToSearch });
 
       if (!user) {
         throw new ApiError('Inna not found', 404);
@@ -14,7 +16,7 @@ module.exports = {
 
       req.user = user;
 
-      next();
+      next()
     } catch (e) {
       next(e);
     }
@@ -39,4 +41,52 @@ module.exports = {
       next(e);
     }
   },
+
+  isNewUserValid: async (req, res, next) => {
+    try {
+      let validate = userValidator.newUserValidator.validate(req.body);
+
+      if (validate.error) {
+        throw new ApiError(validate.error.message, 400);
+      }
+
+      req.body = validate.value;
+
+      next()
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  isEditUserValid: async (req, res, next) => {
+    try {
+      let validate = userValidator.editUserValidator.validate(req.body);
+
+      if (validate.error) {
+        throw new ApiError(validate.error.message, 400);
+      }
+
+      req.body = validate.value;
+
+      next()
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  isUserIdValid: async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+
+      const validate = commonValidator.idValidator.validate(userId);
+
+      if (validate.error) {
+        throw new ApiError(validate.error.message, 400);
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
 }
