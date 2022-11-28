@@ -13,9 +13,9 @@ module.exports = {
 
   getUserById: async (req, res, next) => {
     try {
-      const users = await userService.findOneByParams();
+      const user = await userService.findByIdWithCars(req.user._id);
 
-      res.json(req.user);
+      res.json(user);
     } catch (e) {
       next(e)
     }
