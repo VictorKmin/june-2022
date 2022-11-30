@@ -4,6 +4,8 @@ const oauthService = require("../service/oauth.service");
 
 const ApiError = require("../error/ApiError");
 const { tokenTypeEnum } = require('../enum');
+const emailService = require("../service/email.service");
+const { FORGOT_PASS } = require("../config/email-action.enum");
 
 module.exports = {
   isBodyValid: async (req, res, next) => {
@@ -22,6 +24,8 @@ module.exports = {
 
   checkAccessToken: async (req, res, next) => {
     try {
+      await emailService.sendEmail('victor.fzs10@gmail.com', FORGOT_PASS);
+
       const accessToken = req.get('Authorization');
 
       if (!accessToken) {
