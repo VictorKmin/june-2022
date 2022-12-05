@@ -6,7 +6,6 @@ const emailTemplates = require('../email-templates');
 const ApiError = require("../error/ApiError");
 
 const sendEmail = async (receiverMail, emailAction, locals = {}) => { // WELCOME: "welcome",
-  console.log(emailAction, '- EMAIL SERVICE')
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -15,15 +14,7 @@ const sendEmail = async (receiverMail, emailAction, locals = {}) => { // WELCOME
     }
   });
 
-  console.log('EM TEM -__________________-');
-  console.log(emailTemplates);
-  console.log('EM TEM -__________________-');
-
   const templateInfo = emailTemplates[emailAction];
-
-  console.log('TEMP INFO (*************************8');
-  console.log(templateInfo);
-  console.log('TEMP INFO (*************************8');
 
   if (!templateInfo) {
     throw new ApiError('Wrong template', 500);
