@@ -5,6 +5,7 @@ require('dotenv').config()
 const userRouter = require('./router/user.router');
 const authRouter = require('./router/auth.router');
 const configs = require('./config/config');
+const { cronRunner } = require('./cron');
 
 const app = express();
 
@@ -28,4 +29,5 @@ app.use((err, req, res, next) => {
 app.listen(configs.PORT, async () => {
   await mongoose.connect('mongodb://localhost:27017/june2022');
   console.log(`Server listen ${configs.PORT}`);
+  cronRunner();
 });

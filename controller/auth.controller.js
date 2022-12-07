@@ -1,6 +1,7 @@
 const oauthService = require("../service/oauth.service");
 const emailService = require("../service/email.service");
 const ActionToken = require("../dataBase/ActionToken");
+const OldPassword = require("../dataBase/OldPassword");
 const OAuth = require("../dataBase/OAuth");
 const User = require("../dataBase/User");
 const { WELCOME, FORGOT_PASS } = require("../config/email-action.enum");
@@ -66,6 +67,8 @@ module.exports = {
       const { user, body } = req;
 
       const hashPassword = await oauthService.hashPassword(body.password);
+
+      await OldPassword.create({ _user_id: user._id, password: user.password});
 
       await ActionToken.deleteOne({ token: req.get('Authorization') });
       await User.updateOne({ _id: user._id }, { password: hashPassword });
