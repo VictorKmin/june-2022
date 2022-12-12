@@ -10,6 +10,6 @@ router.post('/login', mdlwr.isBodyValid, userMdlwr.getUserDynamically('email'), 
 router.post('/refresh', authMdlwr.checkRefreshToken, controller.refresh);
 
 router.post('/password/forgot', userMdlwr.getUserDynamically('email'), controller.forgotPassword);
-router.put('/password/forgot', authMdlwr.checkActionToken, controller.forgotPasswordAfterForgot);
+router.put('/password/forgot', authMdlwr.checkActionToken, authMdlwr.checkOldPasswords, controller.forgotPasswordAfterForgot);
 
 module.exports = router;
