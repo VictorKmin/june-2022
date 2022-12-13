@@ -1,5 +1,8 @@
 const oauthService = require("../service/oauth.service");
 const emailService = require("../service/email.service");
+const smsService = require("../service/sms.service");
+const { smsActionTypeEnum } = require("../enum");
+const smsTemplate = require("../helper/sms-template.helper");
 const ActionToken = require("../dataBase/ActionToken");
 const OldPassword = require("../dataBase/OldPassword");
 const OAuth = require("../dataBase/OAuth");
@@ -13,7 +16,10 @@ module.exports = {
     try {
       const { user, body } = req;
 
-      // await emailService.sendEmail(user.email, WELCOME, { userName: user.name, array: [{ number: 1}, { number: 2}, { number: 3}], condition: false });
+      await Promise.allSettled([
+        emailService.sendEmail(user.email, WELCOME, { userName: user.name, array: [{ number: 1 }], condition: false }),
+        smsService.sendSms(smsTemplate[smsActionTypeEnum.WELCOME](user.name), user.phone)
+      ]);
 
       await user.comparePasswords(body.password);
 
@@ -68,7 +74,7 @@ module.exports = {
 
       const hashPassword = await oauthService.hashPassword(body.password);
 
-      await OldPassword.create({ _user_id: user._id, password: user.password});
+      await OldPassword.create({ _user_id: user._id, password: user.password });
 
       await ActionToken.deleteOne({ token: req.get('Authorization') });
       await User.updateOne({ _id: user._id }, { password: hashPassword });
