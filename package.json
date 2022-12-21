@@ -32,6 +32,7 @@
     "nodemailer-express-handlebars": "^5.0.0",
     "nodemon": "^2.0.20",
     "pug": "^3.0.2",
+    "socket.io": "^4.5.4",
     "swagger-ui-express": "^4.6.0",
     "twilio": "^3.83.4",
     "uuid": "^9.0.0"
